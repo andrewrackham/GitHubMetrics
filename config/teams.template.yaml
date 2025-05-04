@@ -1,0 +1,8 @@
+﻿teams:
+  TeamNameA:
+    - github-user-a
+    - github-user-b
+    - github-user-c
+  TeamNameB:
+    - github-user-d
+    - github-user-e

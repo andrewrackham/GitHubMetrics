@@ -1,0 +1,8 @@
+﻿pandas
+PyGithub
+pyyaml
+matplotlib
+seaborn
+plotly
+python-dateutil
+business-duration

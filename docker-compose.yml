@@ -1,0 +1,10 @@
+﻿version: '3.8'
+services:
+  github-metrics:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    command: python collector.py
