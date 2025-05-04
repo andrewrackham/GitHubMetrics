@@ -2,6 +2,7 @@
 import json
 import os
 from datetime import datetime, timezone, date
+from pathlib import Path
 
 from github import Github
 from github.PaginatedList import PaginatedList
@@ -46,7 +47,7 @@ def extract_reviews(pr: PullRequest) -> list[dict]:
     return reviews
 
 
-def fetch_pull_requests(repo_name: str, start: date, end: date):
+def main(repo_name: str, start: date, end: date):
     gh = Github(os.getenv('GITHUB_TOKEN'))
     repo = gh.get_repo(repo_name)
 
@@ -54,10 +55,13 @@ def fetch_pull_requests(repo_name: str, start: date, end: date):
     pulls = repo.get_pulls(state='all', sort='created', direction='desc')
 
     data = filter_pull_request_data(pulls, end, start)
-
     print(f"Total {len(data)} PRs fetched")
+
+    Path("data").mkdir(exist_ok=True)
     with open('data/raw.json', 'w') as file_stream:
         json.dump(data, file_stream, indent=2)
+
+    print("Raw Data written to data/raw.json")
 
 
 def filter_pull_request_data(pulls: PaginatedList[PullRequest], end: date, start: date) -> list[dict]:
@@ -107,7 +111,8 @@ if __name__ == '__main__':
     parser.add_argument('--end', required=True)
     args = parser.parse_args()
 
-    start_date = datetime.fromisoformat(args.start).replace(tzinfo=timezone.utc)
-    end_date = datetime.fromisoformat(args.end).replace(tzinfo=timezone.utc)
-
-    fetch_pull_requests(args.repo, start_date, end_date)
+    main(
+        args.repo,
+        datetime.fromisoformat(args.start).replace(tzinfo=timezone.utc),
+        datetime.fromisoformat(args.end).replace(tzinfo=timezone.utc)
+    )
