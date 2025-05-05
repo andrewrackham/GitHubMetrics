@@ -67,14 +67,14 @@ def main(repo_name: str, start: date, end: date):
 def filter_pull_request_data(pulls: PaginatedList[PullRequest], end: date, start: date) -> list[dict]:
     data = []
     for pr in pulls:
-        if pr.created_at > end:
+        if not pr.merged_at or pr.merged_at > end:
             continue
 
-        if pr.created_at < start or pr.created_at > end:
-            print(f"Exiting at PR #{pr.number} (created at {pr.created_at})")
+        if pr.merged_at < start:
+            print(f"Exiting at PR #{pr.number} (merged at {pr.created_at})")
             break
 
-        print(f"Processing PR #{pr.number} (created at {pr.created_at})")
+        print(f"Processing PR #{pr.number} (merged at {pr.created_at})")
         pull_request_data = build_pull_request_data(pr)
 
         data.append(pull_request_data)

@@ -2,9 +2,8 @@
 import json
 
 
-def generate_report(input_file, output_file):
-    with open(input_file) as f:
-        metrics = json.load(f)
+def main(input_file, output_file):
+    metrics = load_metrics(input_file)
 
     with open(output_file, 'w') as f:
         f.write("# GitHub PR Metrics Report\n\n")
@@ -26,10 +25,16 @@ def generate_report(input_file, output_file):
                 f.write(f"- {k}: {v}\n")
 
 
+def load_metrics(input_file):
+    with open(input_file) as file_stream:
+        metrics = json.load(file_stream)
+    return metrics
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
 
-    generate_report(args.input, args.output)
+    main(args.input, args.output)

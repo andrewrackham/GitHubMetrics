@@ -13,6 +13,28 @@ def load_metrics(path):
         return json.load(f)
 
 
+def plot_first_commit_to_production(df):
+    # plt.figure(figsize=(10, 6))
+    # sns.histplot(df["first_commit_to_production"], bins=20, kde=True)
+    # plt.title("Distribution of Time to Production (Working Hours)")
+    # plt.xlabel("Hours")
+    # plt.ylabel("Number of PRs")
+    # plt.savefig("charts/first_commit_to_production.png")
+
+    df["merged_at"] = pd.to_datetime(df["merged_at"])
+    df = df.sort_values("merged_at")
+
+    plt.figure(figsize=(12, 6))
+    sns.lineplot(data=df, x="created_at", y="first_commit_to_production", hue="team", marker="o")
+    plt.title("First Commit to Production by Team")
+    plt.xlabel("PR Merge Date")
+    plt.ylabel("Time to Production (mins)")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig("charts/first_commit_to_production.png")
+    plt.close()
+
+
 def plot_merge_time_distribution(df):
     plt.figure(figsize=(10, 6))
     sns.histplot(df["time_to_merge_hrs"], bins=20, kde=True)
@@ -34,9 +56,10 @@ def plot_prs_by_author(df):
 
 def main():
     metrics = load_metrics("data/metrics.json")
-    df = pd.DataFrame(metrics)
-    plot_merge_time_distribution(df)
-    plot_prs_by_author(df)
+    pull_request_df = pd.DataFrame(metrics.get("pull_requests"))
+    plot_first_commit_to_production(pull_request_df)
+    # plot_merge_time_distribution(pull_request_df)
+    # plot_prs_by_author(pull_request_df)
     print("Charts saved to /charts")
 
 
