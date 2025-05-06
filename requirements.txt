@@ -6,3 +6,4 @@ seaborn
 plotly
 python-dateutil
 business-duration
+py-markdown-table

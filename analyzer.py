@@ -37,7 +37,6 @@ def main(pull_requests, team_pull_requests):
 
     pull_request_metrics = []
     for pr in pull_requests:
-        # if pr["state"] == "closed": continue
         team = team_lookup.get(pr["author"], "unknown")
         pull_request_metrics.append(build_metric(pr, team))
 
@@ -201,10 +200,10 @@ def build_metric(pull_request, team):
         "code_complete_to_production": business_hours_delta(last_commit_at, merged_at),
         "feedback_delay": business_hours_delta(ready_for_review_at, first_feedback_at),
         "code_review_duration": business_hours_delta(ready_for_review_at, approved_at if approved_at else merged_at),
-        "code_review_duration_with_feedback": business_hours_delta(
-            ready_for_review_at,
-            approved_at if approved_at else merged_at if merged_at else first_feedback_at
-        ),
+        # "code_review_duration_with_feedback": business_hours_delta(
+        #     ready_for_review_at,
+        #     approved_at if approved_at else merged_at if merged_at else first_feedback_at
+        # ),
         "active_development_duration": business_hours_delta(first_commit_at, last_commit_at),
 
         "lines_added": pull_request.get("additions", 0),
