@@ -52,7 +52,7 @@ def build_weekly_table(metrics):
 
 def build_duration_row(label, metrics):
     data = list[dict[str, any]]()
-    for key, source in metrics.items():
+    for key, source in sorted(metrics.items()):
         totals = source["totals"]
         averages = source["averages"]
 
