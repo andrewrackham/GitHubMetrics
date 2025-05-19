@@ -35,13 +35,14 @@ def main(pull_requests, team_pull_requests):
         member: team for team, members in team_pull_requests.items() for member in members
     }
 
-    pull_request_metrics = []
+    pull_request_metrics = {}
     for pr in pull_requests:
         team = team_lookup.get(pr["author"], "unknown")
-        pull_request_metrics.append(build_metric(pr, team))
+        pr_metric = build_metric(pr, team)
+        pull_request_metrics[pr_metric["number"]] = pr_metric
 
     team_pull_requests = {}
-    for pr in pull_request_metrics:
+    for pr_number, pr in pull_request_metrics.items():
         team = pr["team"]
         if team not in team_pull_requests: team_pull_requests[team] = []
         team_pull_requests[team].append(pr)
@@ -107,7 +108,7 @@ def build_metrics_for_collection(prs_by_time_period):
 def build_team_metrics_per_week(pull_requests):
     prs_by_week = {}
     for pr in pull_requests:
-        week = datetime.fromisoformat(pr["merged_at"]).date().isocalendar().week
+        week = datetime.fromisoformat(pr["merged_at"]).date().strftime("%Y-%W")
         if week not in prs_by_week: prs_by_week[week] = []
         prs_by_week[week].append(pr)
 
@@ -117,7 +118,7 @@ def build_team_metrics_per_week(pull_requests):
 def build_team_metrics_per_month(pull_requests):
     prs_by_month = {}
     for pr in pull_requests:
-        month = datetime.fromisoformat(pr["merged_at"]).date().strftime("%B")
+        month = datetime.fromisoformat(pr["merged_at"]).date().strftime("%Y-%m")
         if month not in prs_by_month: prs_by_month[month] = []
         prs_by_month[month].append(pr)
 

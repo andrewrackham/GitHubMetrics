@@ -52,7 +52,7 @@ def build_weekly_table(metrics):
 
 def build_duration_row(label, metrics):
     data = list[dict[str, any]]()
-    for key, source in sorted(metrics.items()):
+    for key, source in sorted(metrics.items(), reverse=True):
         totals = source["totals"]
         averages = source["averages"]
 
@@ -80,12 +80,12 @@ def build_duration_row(label, metrics):
 
 def build_pull_request_table(metrics):
     data = list[dict[str, any]]()
-    for row_source in metrics:
+    for pr_number, row_source in metrics.items():
         if row_source["approved_at"] is None:
             continue
 
         row = {
-            "PR": row_source["number"],
+            "PR": pr_number,
         }
         format_metrics_row(row, row_source)
         data.append(row)
